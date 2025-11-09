@@ -91,17 +91,17 @@ sequenceDiagram
     Note over DS,DB: Data Ingestion & Processing Flow
     
     loop Every Second (per device)
-        DS->>KB: Publish IoT Reading Event
-        Note right of KB: Topic: iot-readings<br/>Partitioned by deviceId
+        DS->>KB: Publish IoT Event
+        Note right of KB: Topic: iot-events<br/>Partitioned by deviceId
         KB->>SP: Stream Event
         SP->>SP: Process & Aggregate
-        SP->>DB: Store Raw Reading
+        SP->>DB: Store Raw Event
         SP->>DB: Update Aggregations<br/>(windowed stats)
     end
     
     Note over API,User: Query Flow
     
-    User->>API: GET /api/readings?deviceId=X&from=...&to=...
+    User->>API: GET /api/events?deviceId=X&from=...&to=...
     API->>API: Authenticate (JWT)
     API->>DB: Query Aggregated Data
     DB-->>API: Return Results

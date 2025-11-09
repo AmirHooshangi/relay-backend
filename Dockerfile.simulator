@@ -3,12 +3,17 @@ WORKDIR /app
 COPY pom.xml .
 COPY relay-common/pom.xml ./relay-common/
 COPY relay-simulator/pom.xml ./relay-simulator/
+COPY relay-processor/pom.xml ./relay-processor/
+COPY relay-api/pom.xml ./relay-api/
 COPY relay-common/src ./relay-common/src
 COPY relay-simulator/src ./relay-simulator/src
 RUN mvn clean package -pl relay-simulator -am -DskipTests
+RUN ls -la /app/relay-simulator/target/*.jar && \
+    cp /app/relay-simulator/target/relay-simulator-1.0-SNAPSHOT.jar /app/app.jar || \
+    (echo "JAR not found, listing target directory:" && ls -la /app/relay-simulator/target/)
 
 FROM eclipse-temurin:25-jre
 WORKDIR /app
-COPY --from=build /app/relay-simulator/target/relay-simulator-*.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY --from=build /app/app.jar app.jar
+ENTRYPOINT ["java", "-Dspring.classformat.ignore=true", "-jar", "app.jar"]
 

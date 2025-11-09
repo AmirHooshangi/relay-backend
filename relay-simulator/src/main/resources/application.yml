@@ -1,0 +1,7 @@
+kafka:
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  
+simulator:
+  enabled: true
+  send-interval-seconds: 1
+

@@ -1,6 +1,6 @@
 # IoT Data Processing System - Relay Backend
 
-This is a backend system for processing continuous IoT device data streams. The system simulates IoT devices, processes their readings through Kafka Streams, stores data in PostgreSQL, and provides a secure REST API for querying aggregated readings.
+This is a backend system for processing continuous IoT device data streams. The system simulates IoT devices, processes their events through Kafka Streams, stores data in PostgreSQL, and provides a secure REST API for querying aggregated events.
 
 ## Architecture
 
@@ -19,9 +19,9 @@ This is a multi-module Maven project. For details on module structure and packag
 ### Modules
 
 - **relay-common**: Shared domain models and DTOs
-- **relay-simulator**: IoT device simulator that generates and publishes readings
+- **relay-simulator**: IoT device simulator that generates and publishes events
 - **relay-processor**: Kafka Streams processor for data aggregation
-- **relay-api**: Spring Boot REST API for querying readings
+- **relay-api**: Spring Boot REST API for querying events
 
 ## Prerequisites
 
@@ -43,9 +43,9 @@ This starts:
 - Zookeeper (port 2181)
 - Kafka (port 9092)
 - PostgreSQL with TimescaleDB (port 5432)
-- **simulator**: IoT device simulator (generates and publishes readings to Kafka)
+- **simulator**: IoT device simulator (generates and publishes events to Kafka)
 - **processor**: Kafka Streams processor (consumes from Kafka, processes and stores data)
-- **api**: Spring Boot REST API (port 8080) for querying readings
+- **api**: Spring Boot REST API (port 8080) for querying events
 
 To stop everything:
 

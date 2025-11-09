@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
 
     <name>relay-api</name>
-    <description>Spring Boot REST API - Query service for IoT readings</description>
+    <description>Spring Boot REST API - Query service for IoT events</description>
 
     <dependencies>
         <dependency>

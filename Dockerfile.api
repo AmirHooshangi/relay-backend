@@ -2,6 +2,7 @@ FROM maven:3.9-eclipse-temurin-25 AS build
 WORKDIR /app
 COPY pom.xml .
 COPY relay-common/pom.xml ./relay-common/
+COPY relay-simulator/pom.xml ./relay-simulator/
 COPY relay-processor/pom.xml ./relay-processor/
 COPY relay-api/pom.xml ./relay-api/
 COPY relay-common/src ./relay-common/src
