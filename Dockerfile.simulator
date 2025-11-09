@@ -1,0 +1,14 @@
+FROM maven:3.9-eclipse-temurin-25 AS build
+WORKDIR /app
+COPY pom.xml .
+COPY relay-common/pom.xml ./relay-common/
+COPY relay-simulator/pom.xml ./relay-simulator/
+COPY relay-common/src ./relay-common/src
+COPY relay-simulator/src ./relay-simulator/src
+RUN mvn clean package -pl relay-simulator -am -DskipTests
+
+FROM eclipse-temurin:25-jre
+WORKDIR /app
+COPY --from=build /app/relay-simulator/target/relay-simulator-*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
