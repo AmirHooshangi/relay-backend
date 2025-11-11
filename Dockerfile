@@ -1,4 +1,4 @@
-FROM maven:3.9-eclipse-temurin-25 AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
 COPY pom.xml .
 COPY relay-common/pom.xml ./relay-common/
@@ -9,9 +9,10 @@ COPY relay-common/src ./relay-common/src
 COPY relay-simulator/src ./relay-simulator/src
 COPY relay-processor/src ./relay-processor/src
 COPY relay-api/src ./relay-api/src
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests \
+    -Dmaven.compiler.source=21 -Dmaven.compiler.target=21 -Dmaven.compiler.release=21
 
-FROM eclipse-temurin:25-jre
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/relay-api/target/relay-api-*.jar app.jar
 EXPOSE 8080

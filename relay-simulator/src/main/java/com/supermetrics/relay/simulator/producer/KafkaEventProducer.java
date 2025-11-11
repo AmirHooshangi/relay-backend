@@ -13,10 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
-/**
- * Kafka-based implementation of EventProducer.
- * Publishes device events to Kafka topic as JSON messages.
- */
 public class KafkaEventProducer implements EventProducer {
     private static final Logger logger = LoggerFactory.getLogger(KafkaEventProducer.class);
     private static final String TOPIC_NAME = "iot-events";

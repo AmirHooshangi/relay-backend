@@ -8,10 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
-/**
- * Main application for IoT Device Simulator.
- * Simulates multiple IoT devices sending events to Kafka every second.
- */
 @SpringBootApplication
 @EnableScheduling
 public class SimulatorApplication {

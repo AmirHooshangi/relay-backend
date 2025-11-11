@@ -1,126 +1,86 @@
-# IoT Data Processing System - Relay Backend
+# Relay Backend
 
-This is a backend system for processing continuous IoT device data streams. The system simulates IoT devices, processes their events through Kafka Streams, stores data in PostgreSQL, and provides a secure REST API for querying aggregated events.
-
-## Architecture
-
-For detailed architectural decisions, technology stack choices, and trade-offs, please see [ARCHITECTURE.md](ARCHITECTURE.md).
-
-**Note**: The architecture document contains Mermaid diagrams. To view these diagrams properly, you'll need a Mermaid viewer:
-- **VS Code**: Install the "Markdown Preview Mermaid Support" extension
-- **GitHub/GitLab**: Diagrams render automatically in markdown files
-- **Online**: Use [Mermaid Live Editor](https://mermaid.live/)
-- **IntelliJ IDEA**: Install the "Mermaid" plugin
-
-## Project Structure
-
-This is a multi-module Maven project. For details on module structure and package naming, see [MODULE_STRUCTURE.md](MODULE_STRUCTURE.md).
-
-### Modules
-
-- **relay-common**: Shared domain models and DTOs
-- **relay-simulator**: IoT device simulator that generates and publishes events
-- **relay-processor**: Kafka Streams processor for data aggregation
-- **relay-api**: Spring Boot REST API for querying events
-
-## Prerequisites
-
-- Java 25
-- Maven 3.8+
-- Docker and Docker Compose
+A simple IoT data processing system. Simulates devices, processes events through Kafka, stores aggregations in PostgreSQL, and exposes a REST API.
 
 ## Quick Start
 
-### Using Docker Compose
-
-The easiest way to run the entire system:
-
 ```bash
-docker-compose up -d
+docker compose build
+docker compose up -d
 ```
 
 This starts:
-- Zookeeper (port 2181)
 - Kafka (port 9092)
 - PostgreSQL with TimescaleDB (port 5432)
-- **simulator**: IoT device simulator (generates and publishes events to Kafka)
-- **processor**: Kafka Streams processor (consumes from Kafka, processes and stores data)
-- **api**: Spring Boot REST API (port 8080) for querying events
+- Simulator (generates device events)
+- Processor (aggregates events)
+- API (port 8080)
 
-To stop everything:
-
+View logs:
 ```bash
-docker-compose down
+docker compose logs -f
 ```
 
-### Manual Setup
-
-1. Start Kafka and PostgreSQL (or use Docker Compose for these services)
-2. Build all modules:
-   ```bash
-   mvn clean install
-   ```
-3. Run each service independently:
-   
-   **Simulator** (in a separate terminal):
-   ```bash
-   cd relay-simulator
-   java -jar target/relay-simulator-1.0-SNAPSHOT.jar
-   ```
-   
-   **Processor** (in a separate terminal):
-   ```bash
-   cd relay-processor
-   mvn spring-boot:run
-   ```
-   
-   **API** (in a separate terminal):
-   ```bash
-   cd relay-api
-   mvn spring-boot:run
-   ```
-
-## Configuration
-
-Each service has its own configuration:
-
-- **Simulator**: Configure Kafka bootstrap servers via environment variable `KAFKA_BOOTSTRAP_SERVERS`
-- **Processor**: Configuration in `relay-processor/src/main/resources/application.yml`
-- **API**: Configuration in `relay-api/src/main/resources/application.yml`
-
-Update the following for your environment:
-- Kafka bootstrap servers
-- PostgreSQL connection details
-- Server port (API only)
-
-## Testing
-
-Run tests for all modules:
-
+Stop everything:
 ```bash
-mvn test
+docker compose down
 ```
 
-Run tests for a specific module:
+## API
 
+All endpoints require a Bearer token: `supermetrics-api-token-2024`
+
+### Examples
+
+Get aggregations by device:
 ```bash
-cd relay-api
-mvn test
+curl -H "Authorization: Bearer supermetrics-api-token-2024" \
+  "http://localhost:8080/api/events/device/device-123?startTime=2024-01-01T00:00:00Z&endTime=2024-01-01T23:59:59Z"
 ```
 
-## Building
-
-Build the executable JAR:
-
+Get aggregations by zone:
 ```bash
-mvn clean package
+curl -H "Authorization: Bearer supermetrics-api-token-2024" \
+  "http://localhost:8080/api/events/zone/zone-1?startTime=2024-01-01T00:00:00Z&endTime=2024-01-01T23:59:59Z"
 ```
 
-The executable JAR will be in `relay-api/target/relay-api-1.0-SNAPSHOT.jar`
-
-Run it with:
-
+Get aggregations by device type:
 ```bash
-java -jar relay-api/target/relay-api-1.0-SNAPSHOT.jar
+curl -H "Authorization: Bearer supermetrics-api-token-2024" \
+  "http://localhost:8080/api/events/type/THERMOSTAT?startTime=2024-01-01T00:00:00Z&endTime=2024-01-01T23:59:59Z"
 ```
 
+Get aggregations by zone and type:
+```bash
+curl -H "Authorization: Bearer supermetrics-api-token-2024" \
+  "http://localhost:8080/api/events/zone/zone-1/type/THERMOSTAT?startTime=2024-01-01T00:00:00Z&endTime=2024-01-01T23:59:59Z"
+```
+
+Device types: `THERMOSTAT`, `HEART_RATE_METER`, `CAR_FUEL`
+
+## Project Structure
+
+- `relay-common` - Shared models
+- `relay-simulator` - Device simulator
+- `relay-processor` - Kafka Streams processor
+- `relay-api` - REST API
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for more details.
+
+## Future Works
+
+Top 7 things needed for production:
+
+1. **Monitoring & Observability** - Add Prometheus metrics, distributed tracing (Jaeger/Zipkin), and structured logging. Set up alerts for error rates, latency, and Kafka lag.
+
+2. **Error Handling & Resilience** - Implement dead letter queues for failed messages, retry policies with exponential backoff, circuit breakers for database calls, and graceful degradation when services are down.
+
+3. **Security Hardening** - Replace static JWT token with proper OAuth2/OIDC flow, add refresh tokens, implement rate limiting, input validation/sanitization, and API key rotation.
+
+4. **Scalability** - Deploy distributed Kafka cluster (3+ brokers), add database read replicas, implement connection pooling, and add horizontal scaling for API and processor services.
+
+5. **Testing & Quality** - Add integration tests with Testcontainers, load testing to find bottlenecks, chaos engineering tests, and end-to-end tests for critical paths.
+
+6. **CI/CD Pipeline** - Set up automated builds, tests, and deployments. Add staging environment, automated rollback capabilities, and blue-green deployments.
+
+7. **Documentation & Operations** - Generate OpenAPI/Swagger docs, create runbooks for common issues, add deployment guides, and document disaster recovery procedures.

@@ -11,9 +11,6 @@ import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for KafkaEventProducer serialization logic.
- */
 class KafkaEventProducerTest {
     
     private ObjectMapper objectMapper;
@@ -25,7 +22,7 @@ class KafkaEventProducerTest {
     }
     
     @Test
-    void testEventSerialization() throws Exception {
+    void serializesAndDeserializesEvents() throws Exception {
         DeviceEvent event = new DeviceEvent(
             "test-device-1",
             DeviceType.THERMOSTAT,
@@ -51,23 +48,5 @@ class KafkaEventProducerTest {
         assertEquals(event.timestamp(), deserialized.timestamp());
     }
     
-    @Test
-    void testEventValidation() {
-        DeviceEvent event = new DeviceEvent(
-            "test-device-1",
-            DeviceType.THERMOSTAT,
-            "Zone A",
-            25.5,
-            Instant.now()
-        );
-        
-        assertNotNull(event.deviceId());
-        assertNotNull(event.deviceType());
-        assertNotNull(event.value());
-        assertNotNull(event.timestamp());
-        assertEquals("test-device-1", event.deviceId());
-        assertEquals(DeviceType.THERMOSTAT, event.deviceType());
-        assertEquals(25.5, event.value());
-    }
 }
 

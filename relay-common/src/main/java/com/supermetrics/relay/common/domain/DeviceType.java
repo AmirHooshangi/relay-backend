@@ -1,8 +1,5 @@
 package com.supermetrics.relay.common.domain;
 
-/**
- * Enum representing different types of IoT devices.
- */
 public enum DeviceType {
     THERMOSTAT("thermostat"),
     HEART_RATE_METER("heart-rate-meter"),

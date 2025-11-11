@@ -15,10 +15,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
 
-/**
- * Simulates multiple IoT devices generating events.
- * Each device sends a new event every second using Spring's scheduler.
- */
 @Component
 public class DeviceSimulator {
     private static final Logger logger = LoggerFactory.getLogger(DeviceSimulator.class);
@@ -80,10 +76,6 @@ public class DeviceSimulator {
         }
     }
     
-    /**
-     * Generates and sends an event for the next device in rotation.
-     * This method cycles through all configured devices.
-     */
     public void generateAndSendEvent() {
         if (deviceConfigs.isEmpty()) {
             logger.warn("No device configs available");
@@ -94,9 +86,6 @@ public class DeviceSimulator {
         currentDeviceIndex = (currentDeviceIndex + 1) % deviceConfigs.size();
     }
     
-    /**
-     * Stops all scheduled tasks.
-     */
     public void stop() {
         logger.info("Stopping device simulator");
         for (ScheduledFuture<?> task : scheduledTasks) {
